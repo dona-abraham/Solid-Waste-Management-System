@@ -1,0 +1,36 @@
+{% extends 'user_header.html' %}
+{% block content %}
+<html>
+    <head>
+        <title> Dustbin Details Updation </title>
+    </head>
+    <body align="center">
+        <table align="center">
+        <h1>Update your Dustbin Details!</h1>
+        <form method="post">
+            {% csrf_token %}
+            <table align="center">
+                <tr>
+                    <td><label>Building Category:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.building_category}}</td>
+                </tr> 
+                <tr>
+                    <td><label>Address:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.address}}</td>
+                </tr> 
+                <tr>
+                    <td><label>Municipality:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.muncipality}}</td>
+                </tr> 
+                <tr>
+                    <td><label>Contact Number:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.contact_no}}</td>
+                </tr>
+            </table>
+            {% comment %} {{ logform.as_p}} {% endcomment %}
+            <button  class="thm-btn contact-one__btn"  type="submit">Update</button>
+        </form>
+    </table>
+    </body>
+</html>
+{% endblock %}

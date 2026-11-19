@@ -1,0 +1,90 @@
+{% extends 'muncipal_header.html' %}
+{% block content %}
+<html>
+<head>
+    <title>Public Dustbin view</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        .map-container {
+            width: 200px;
+            height: 150px;
+        }
+
+        .large-map-container {
+            width: 500px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body align="center">
+    <h1>Municipality Dustbins</h1>
+    <table class="table table-striped" align="center">
+        <tr>
+            <th>Dustbin ID</th>
+            <th>Location</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        <tbody>
+          {% for data in public_dustbin_view %}
+            <tr>
+                <td>{{ data.dustbin_id }}</td>
+                <td>
+                    <!-- Small map container for each dustbin -->
+                    <div id="map-{{ data.id }}" class="map-container" onclick="openLargeMap({{ data.id }}, {{ data.latitude }}, {{ data.longitude }})"></div>
+                </td>
+                <td><a class="btn btn-primary" href="{% url 'public_dustbin_update' data.id %}">Edit</a></td>
+                <td><a class="btn btn-secondary" href="{% url 'public_dustbin_delete' data.id %}">Delete</a></td>
+            </tr>
+
+            <!-- Initialize the small map for each dustbin using its latitude and longitude -->
+            <script type="text/javascript">
+                var map{{ data.id }} = L.map('map-{{ data.id }}').setView([{{ data.latitude }} , {{ data.longitude }}], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map{{ data.id }});
+
+                // Add a marker to the small map
+                L.marker([{{ data.latitude }} , {{ data.longitude }}]).addTo(map{{ data.id }});
+            </script>
+          {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Modal for the larger map -->
+    <div id="largeMapModal" style="display:none;">
+        <div id="largeMap" class="large-map-container"></div>
+        <button class="btn btn-primary" onclick="closeLargeMap()">Close</button>
+    </div>
+
+
+<script type="text/javascript">
+    // Function to open the large map modal
+    function openLargeMap(dustbinId, latitude, longitude) {
+        // Show the modal
+        document.getElementById('largeMapModal').style.display = 'block';
+
+        // Initialize the large map
+        var largeMap = L.map('largeMap').setView([latitude, longitude], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(largeMap);
+
+        // Add a marker to the large map
+        L.marker([latitude, longitude]).addTo(largeMap);
+    }
+
+    // Function to close the large map modal
+    function closeLargeMap() {
+        // Hide the modal
+        document.getElementById('largeMapModal').style.display = 'none';
+
+        // Remove the map when closing to prevent memory leaks
+        var largeMap = document.getElementById('largeMap');
+        largeMap.innerHTML = '';
+    }
+</script>
+</body>
+</html>
+{% endblock %}

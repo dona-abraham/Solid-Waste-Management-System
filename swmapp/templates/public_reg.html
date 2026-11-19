@@ -1,0 +1,173 @@
+{% extends 'regheader.html' %}
+{% block content %}
+{% load static %}
+<html>
+    {% comment %} <link rel="stylesheet" href="{% static 'usertemplate/assets/css/wostin.css'%}" />
+    <link rel="stylesheet" href="{% static 'usertemplate/assets/css/wostin-responsive.css'%}" /> {% endcomment %}
+    <head>
+     <title>Public Registration</title>
+        <style>
+             .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        </style>
+    </head>
+    <body align="center">
+        <form method="post">
+            {% csrf_token %}
+            <table align="center">
+                <tr>
+                    <td><label>Name:</label></td>
+                    <td class="contact-one__form-input-box">{{ publicform.name }}</td>
+                    <span class="error-message" id="name-error"></span>   
+                </tr>
+                <tr>
+                    <td><label>Address:</label></td>
+                    <td class="contact-one__form-input-box">{{ publicform.address }}</td>
+                    <span class="error-message" id="address-error"></span>   
+                </tr>
+                <tr>
+                    <td><label>District:</label></td>
+                    <td class="contact-one__form-input-box">{{ publicform.district }}</td>
+                    <span class="error-message" id="district-error"></span>   
+                </tr>
+                <tr>
+                    <td><label>City:</label></td>
+                    <td class="contact-one__form-input-box">{{ publicform.city }}</td>
+                    <span class="error-message" id="city-error"></span>   
+                </tr>
+                <tr>
+                    <td><label>Municipality:</label></td>
+                    <td class="contact-one__form-input-box">{{ publicform.muncipality }}</td>
+                    <span class="error-message" id="muncipality-error"></span>   
+                </tr>
+                
+                <tr>
+                    <td><label>Village:</label></td>
+                    <td class="contact-one__form-input-box">{{ publicform.village }}</td>
+                    <span class="error-message" id="village-error"></span>   
+                </tr>
+                <tr>
+                    <td><label>Contact Number:</label></td>
+                    <td class="contact-one__form-input-box">{{ publicform.contact_no }}</td>
+                    <span class="error-message" id="contact_no-error"></span>   
+                </tr>
+                <tr>
+                    <td><label>Rationcard Number:</label></td>
+                    <td class="contact-one__form-input-box">{{ publicform.rationcard_no }}</td>
+                    <span class="error-message" id="rationcard_no-error"></span>   
+                </tr>
+                <tr>
+                    <td><label>Email:</label></td>
+                    <td class="contact-one__form-input-box">{{ loginform.email }}</td>
+                    <span class="error-message" id="email-error"></span>   
+                </tr>
+                <tr>
+                    <td><label>Password:</label></td>
+                    <td class="contact-one__form-input-box">{{ loginform.password }}</td>
+                    <span class="error-message" id="password-error"></span>   
+                </tr>
+            </table>
+            <button class="thm-btn contact-one__btn" type="submit">Submit</button>
+        </form>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const fields = ['name','address','district','city','muncipality','village','contact_no','rationcard_no','email', 'password'];
+        
+                // Required field validation
+                fields.forEach(field => {
+                    const input = document.querySelector(`input[name="${field}"]`);
+                    const error = document.getElementById(`${field}-error`);
+                    if (input) {
+                        input.addEventListener('input', () => {
+                            if (input.value.trim() === '') {
+                                error.textContent = 'This field is required.';
+                            } else {
+                                error.textContent = '';
+                            }
+                        });
+                    }
+                });
+        
+                // ✅ Name validation (letters and spaces only)
+                const nameInput = document.querySelector('input[name="muncipality_name"]');
+                const nameError = document.getElementById('name-error');
+                if (nameInput) {
+                    nameInput.addEventListener('input', function () {
+                        const value = nameInput.value.trim();
+                        const regex = /^[A-Za-z ]+$/;
+        
+                        if (value === '') {
+                            nameError.textContent = 'This field is required.';
+                        } else if (!regex.test(value)) {
+                            nameError.textContent = 'Only letters and spaces are allowed.';
+                        } else {
+                            nameError.textContent = '';
+                        }
+                    });
+                }
+        
+                // ✅ Contact validation (10 digits)
+                const contactInput = document.querySelector('input[name="contact_no"]');
+                const contactError = document.getElementById('contact_no-error');
+                if (contactInput) {
+                    contactInput.addEventListener('input', function () {
+                        const value = contactInput.value.trim();
+                        const regex = /^\d{10}$/;
+        
+                        if (value === '') {
+                            contactError.textContent = 'This field is required.';
+                        } else if (!regex.test(value)) {
+                            contactError.textContent = 'Contact must be exactly 10 digits.';
+                        } else {
+                            contactError.textContent = '';
+                        }
+                    });
+                }
+        
+                // ✅ Email validation (valid email format)
+                const emailInput = document.querySelector('input[name="email"]');
+                const emailError = document.getElementById('email-error');
+                if (emailInput) {
+                    emailInput.addEventListener('input', function () {
+                        const value = emailInput.value.trim();
+                        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+                        if (value === '') {
+                            emailError.textContent = 'This field is required.';
+                        } else if (!regex.test(value)) {
+                            emailError.textContent = 'Please enter a valid email address.';
+                        } else {
+                            emailError.textContent = '';
+                        }
+                    });
+                }
+        
+                // ✅ Password validation (strength check)
+                const passwordInput = document.querySelector('input[name="password"]');
+                const passwordError = document.getElementById('password-error');
+                if (passwordInput) {
+                    passwordInput.addEventListener('input', function () {
+                        const value = passwordInput.value;
+                        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+        
+                        if (value.trim() === '') {
+                            passwordError.textContent = 'This field is required.';
+                        } else if (!regex.test(value)) {
+                            passwordError.textContent = 'Password must contain uppercase, lowercase, digit, special character, and be at least 8 characters.';
+                        } else {
+                            passwordError.textContent = '';
+                        }
+                    });
+                }
+            });
+        </script>
+        
+    </body>
+</html>
+{% endblock %}

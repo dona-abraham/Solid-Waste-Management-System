@@ -1,0 +1,46 @@
+{% extends 'driver_header.html' %}
+{% block content %}
+<html>
+    <head>
+        <title>Updation form</title>
+    </head>
+    <body align="center">
+        <h1>Update your Profile!</h1>
+        <form method="post">
+            {% csrf_token %}
+            <table align="center">
+                <tr>
+                    <td><label>Name:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.name}}</td>
+                </tr>
+                <tr>
+                    <td><label>Gender:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.gender}}</td>
+                </tr>
+                <tr>
+                    <td><label>Age:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.age}}</td>
+                </tr>
+                <tr>
+                    <td><label>Municipality:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.municipality}}</td>
+                </tr>
+                <tr>
+                    <td><label>Contact Number:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.contact_no}}</td>
+                </tr>
+                <tr>
+                    <td><label>Email:</label></td>
+                    <td class="contact-one__form-input-box">{{logform.email}}</td>
+                </tr>
+                <tr>
+                    
+                    <td><label>Password:</label></td>
+                    <td class="contact-one__form-input-box">{{logform.password}}</td>
+                </tr>
+            </table>
+            <button  class="thm-btn contact-one__btn" type="submit">Update</button>
+        </form>
+    </body>
+</html>
+{% endblock %}

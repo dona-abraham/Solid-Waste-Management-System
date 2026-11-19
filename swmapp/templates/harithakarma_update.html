@@ -1,0 +1,39 @@
+{% extends 'harithakarma_header.html' %}
+{% block content %}
+<html>
+    <head>
+        <title>Updation form</title>
+    </head>
+    <body align="center">
+        <h1>Update your Profile!</h1>
+        <form method="post">
+            {% csrf_token %}
+            <table align="center" class="form-class">
+                <tr>
+                    <td><label>Harithakarma ID:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.harithakarma_id}}</td>
+                </tr>
+                <tr>
+                    <td><label>Municipality:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.muncipality}}</td>
+                </tr>
+                <tr>
+                    <td><label>Contact Number:</label></td>
+                    <td class="contact-one__form-input-box">{{updateform.contact_no}}</td>
+                </tr>
+                <tr>
+                    <td><label>Email:</label></td>
+                    <td class="contact-one__form-input-box">{{logform.email}}</td>
+                </tr>
+                <tr>
+                    <td><label>Password:</label></td>
+                    <td class="contact-one__form-input-box">{{logform.password}}</td>
+                </tr>
+              
+            </table>
+            
+            <button  class="thm-btn contact-one__btn" type="submit">Update</button>
+        </form>
+    </body>
+</html>
+{% endblock %}

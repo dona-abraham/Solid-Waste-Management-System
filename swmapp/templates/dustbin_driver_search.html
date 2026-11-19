@@ -1,0 +1,121 @@
+{% extends 'driver_header.html' %}
+
+{% block content %}
+    <h1 align="center">Municipality Dustbins</h1>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        .map-container {
+            width: 200px;
+            height: 150px;
+            border: 1px solid #ddd;
+            display: inline-block;
+        }
+
+        .large-map-container {
+            width: 500px;
+            height: 400px;
+        }
+
+        #largeMapModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        #largeMap {
+            width: 90%;
+            height: 80%;
+        }
+    </style>
+
+    {% if messages %}
+        <div class="alert">
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form action="{% url 'dustbin_driver_search' %}" method="get" align="center">
+        {% csrf_token %}
+        <input type="search" name="search" placeholder="Search here">
+        <input type="submit" value="Search">
+    </form>
+
+    <table class="table table-striped" align="center">
+        <thead>
+            <tr>
+                <th>Dustbin ID</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in dustbin_driver_search %}
+                <tr>
+                    <td>{{ data.dustbin_id }}</td>
+                    <td>
+                        <!-- Small map container for each dustbin -->
+                        <div id="map-{{ data.id }}" class="map-container" onclick="openLargeMap({{ data.id }}, {{ data.latitude }}, {{ data.longitude }})"></div>
+                    </td>
+                </tr>
+
+                <!-- Initialize the small map for each dustbin using its latitude and longitude -->
+                <script type="text/javascript">
+                    var map{{ data.id }} = L.map('map-{{ data.id }}').setView([{{ data.latitude }} , {{ data.longitude }}], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map{{ data.id }});
+
+                    // Add a marker to the small map
+                    L.marker([{{ data.latitude }} , {{ data.longitude }}]).addTo(map{{ data.id }});
+                </script>
+            {% empty %}
+                <tr>
+                    <td colspan="2">No dustbins found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Modal for the larger map -->
+    <div id="largeMapModal" style="display:none;">
+        <div id="largeMap" class="large-map-container"></div>
+        <button class="btn btn-primary" onclick="closeLargeMap()">Close</button>
+    </div>
+
+<script type="text/javascript">
+    // Function to open the large map modal
+    function openLargeMap(dustbinId, latitude, longitude) {
+        // Show the modal
+        document.getElementById('largeMapModal').style.display = 'block';
+
+        // Initialize the large map
+        var largeMap = L.map('largeMap').setView([latitude, longitude], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(largeMap);
+
+        // Add a marker to the large map
+        L.marker([latitude, longitude]).addTo(largeMap);
+    }
+
+    // Function to close the large map modal
+    function closeLargeMap() {
+        // Hide the modal
+        document.getElementById('largeMapModal').style.display = 'none';
+
+        // Remove the map when closing to prevent memory leaks
+        var largeMap = document.getElementById('largeMap');
+        largeMap.innerHTML = '';
+    }
+</script>
+
+{% endblock %}
